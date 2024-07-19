@@ -128,7 +128,7 @@ export const actualizarUsuario = async (req, res) => {
         const { id_usuarios } = req.params;
         const { nombre_usuario, apellidos_usuario, correo_usuario, contrasena, photo, rol, telefono, identificacion, fk_id_mascota} = req.body;
 
-        if (!nombre_usuario && !apellidos_usuario && !correo_usuario && !contrasena && !photo  && !rol && !telefono && !identificacion, fk_id_mascota) {
+        if (!nombre_usuario && !apellidos_usuario && !correo_usuario && !contrasena && !photo  && !rol && !telefono && !identificacion && !fk_id_mascota) {
             return res.status(400).json({ message: 'Al menos uno de los campos ( nombre_usuario, apellidos_usuario, correo_usuario, contrasena, photo, rol, telefono, identificacion, fk_id_mascota) debe estar presente en la solicitud para realizar la actualización.' });
         }
 
