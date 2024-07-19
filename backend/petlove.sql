@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-07-2024 a las 16:45:52
--- Versión del servidor: 10.4.27-MariaDB
--- Versión de PHP: 8.1.12
+-- Tiempo de generación: 19-07-2024 a las 18:46:26
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -47,6 +47,14 @@ CREATE TABLE `categoria` (
   `nombre` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `categoria`
+--
+
+INSERT INTO `categoria` (`id_categoria`, `nombre`) VALUES
+(1, 'Perro'),
+(2, 'Gato');
+
 -- --------------------------------------------------------
 
 --
@@ -72,10 +80,16 @@ CREATE TABLE `mascotas` (
   `compatibilidad_otros_animales` enum('Si','No') NOT NULL,
   `imagen` varchar(50) NOT NULL,
   `estado` enum('adoptado','sin adoptar') NOT NULL,
-  `fk_id_usuario` int(11) NOT NULL,
   `fk_id_categoria` int(11) NOT NULL,
   `fk_id_raza` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `mascotas`
+--
+
+INSERT INTO `mascotas` (`Id_mascotas`, `nombre_mascotas`, `genero_mascotas`, `edad_mascota`, `tamaño_mascota`, `color_mascota`, `peso_mascota`, `Esterilizacion`, `Vacunas`, `Desparacitacion`, `Fecha_ult_desparacitacion`, `discapacidad`, `descripcion_discapacidad`, `Energia`, `compatibilidad_ninos`, `compatibilidad_otros_animales`, `imagen`, `estado`, `fk_id_categoria`, `fk_id_raza`) VALUES
+(2, 'Lulu', 'Hembra', '5 meses', 'Mediano', 'Negro con Blanco', '25kg', 'Si', 'Si', 'Si', '2024-05-23', 'Si', 'No tiene una pata', 'Medio', 'Si', 'Si', '', 'sin adoptar', 1, 2);
 
 -- --------------------------------------------------------
 
@@ -87,6 +101,14 @@ CREATE TABLE `raza` (
   `id_raza` int(11) NOT NULL,
   `nombre` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `raza`
+--
+
+INSERT INTO `raza` (`id_raza`, `nombre`) VALUES
+(1, 'BullDog'),
+(2, 'Chiguagua');
 
 -- --------------------------------------------------------
 
@@ -102,8 +124,16 @@ CREATE TABLE `usuarios` (
   `contraseña` varchar(20) NOT NULL,
   `photo` varchar(50) NOT NULL,
   `rol` enum('administrador','adoptante') NOT NULL,
-  `telefono` varchar(50) NOT NULL
+  `telefono` varchar(50) NOT NULL,
+  `fk_id_mascota` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`Id_usuarios`, `nombre_usuario`, `apellidos_usuario`, `correo_usuario`, `contraseña`, `photo`, `rol`, `telefono`, `fk_id_mascota`) VALUES
+(1, 'Sharit', 'Vargas', 'sharit@gmail.com', '133545', '', 'administrador', '3204444432', 2);
 
 --
 -- Índices para tablas volcadas
@@ -128,7 +158,6 @@ ALTER TABLE `categoria`
 --
 ALTER TABLE `mascotas`
   ADD PRIMARY KEY (`Id_mascotas`),
-  ADD KEY `fk_id_usuario` (`fk_id_usuario`),
   ADD KEY `fk_id_categoria` (`fk_id_categoria`),
   ADD KEY `fk_id_raza` (`fk_id_raza`);
 
@@ -142,7 +171,8 @@ ALTER TABLE `raza`
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`Id_usuarios`);
+  ADD PRIMARY KEY (`Id_usuarios`),
+  ADD KEY `fk_id_mascota` (`fk_id_mascota`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -158,25 +188,25 @@ ALTER TABLE `adopcion`
 -- AUTO_INCREMENT de la tabla `categoria`
 --
 ALTER TABLE `categoria`
-  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `mascotas`
 --
 ALTER TABLE `mascotas`
-  MODIFY `Id_mascotas` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id_mascotas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `raza`
 --
 ALTER TABLE `raza`
-  MODIFY `id_raza` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_raza` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `Id_usuarios` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id_usuarios` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Restricciones para tablas volcadas
@@ -193,9 +223,14 @@ ALTER TABLE `adopcion`
 -- Filtros para la tabla `mascotas`
 --
 ALTER TABLE `mascotas`
-  ADD CONSTRAINT `mascotas_ibfk_1` FOREIGN KEY (`fk_id_usuario`) REFERENCES `usuarios` (`Id_usuarios`),
   ADD CONSTRAINT `mascotas_ibfk_2` FOREIGN KEY (`fk_id_raza`) REFERENCES `raza` (`id_raza`),
   ADD CONSTRAINT `mascotas_ibfk_3` FOREIGN KEY (`fk_id_categoria`) REFERENCES `categoria` (`id_categoria`);
+
+--
+-- Filtros para la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`fk_id_mascota`) REFERENCES `mascotas` (`Id_mascotas`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
