@@ -2,13 +2,13 @@ import { pool } from '../database/conexion.js';
 
 export const registrarAdmin = async (req, res) => {
     try {
-      const { nombre_usuario, apellidos_usuario, correo_usuario, contrasena, photo, rol, telefono, identificacion } = req.body;
+      const { nombre_usuario, apellidos_usuario, correo_usuario, contrasena, photo, rol, telefono, identificacion, fk_id_mascota } = req.body;
   
       const estado = 'activo';
   
       const [result] = await pool.query(
-        `INSERT INTO usuarios (nombre_usuario, apellidos_usuario, correo_usuario, contrasena, photo, rol, telefono, identificacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [nombre_usuario, apellidos_usuario, correo_usuario, contrasena, photo, rol, telefono, identificacion]
+        `INSERT INTO usuarios (nombre_usuario, apellidos_usuario, correo_usuario, contrasena, photo, rol, telefono, identificacion, fk_id_mascota) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [nombre_usuario, apellidos_usuario, correo_usuario, contrasena, photo, rol, telefono, identificacion, fk_id_mascota]
       );
   
       if (result.affectedRows > 0) {
@@ -56,7 +56,7 @@ export const registrarAdmin = async (req, res) => {
       // Realizar el registro del usuario en la base de datos
       const query = `
         INSERT INTO usuarios (nombre_usuario, apellidos_usuario, correo_usuario, contrasena, photo, rol, telefono, identificacion) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
   
       const values = [nombre_usuario, apellidos_usuario, correo_usuario, contrasena, photo, userRole, telefono, identificacion];
@@ -126,10 +126,10 @@ export const actualizarUsuario = async (req, res) => {
     try {
 
         const { id_usuarios } = req.params;
-        const { nombre_usuario, apellidos_usuario, correo_usuario, contrasena, photo, rol, telefono, identificacion} = req.body;
+        const { nombre_usuario, apellidos_usuario, correo_usuario, contrasena, photo, rol, telefono, identificacion, fk_id_mascota} = req.body;
 
-        if (!nombre_usuario && !apellidos_usuario && !correo_usuario && !contrasena && !photo  && !rol && !telefono && !identificacion) {
-            return res.status(400).json({ message: 'Al menos uno de los campos ( nombre_usuario, apellidos_usuario, correo_usuario, contrasena, photo, rol, telefono, identificacion) debe estar presente en la solicitud para realizar la actualización.' });
+        if (!nombre_usuario && !apellidos_usuario && !correo_usuario && !contrasena && !photo  && !rol && !telefono && !identificacion, fk_id_mascota) {
+            return res.status(400).json({ message: 'Al menos uno de los campos ( nombre_usuario, apellidos_usuario, correo_usuario, contrasena, photo, rol, telefono, identificacion, fk_id_mascota) debe estar presente en la solicitud para realizar la actualización.' });
         }
 
         const [oldUsuario] = await pool.query("SELECT * FROM usuarios WHERE id_usuarios = ?", [id_usuarios]);
@@ -151,11 +151,12 @@ export const actualizarUsuario = async (req, res) => {
             identificacion: identificacion || oldUsuario[0].identificacion,
             contrasena: contrasena || oldUsuario[0].contrasena,
             rol: rol || oldUsuario[0].rol,
+            fk_id_mascota: fk_id_mascota || oldUsuario[0].fk_id_mascota,
         };
 
         const [result] = await pool.query(
             `UPDATE usuarios SET identificacion=?, nombre_usuario=?, apellidos_usuario=?, correo_usuario=?, photo=?, telefono=?, contrasena=?, rol=?  WHERE id_usuarios = ?`,
-            [updatedUsuario.identificacion, updatedUsuario.nombre_usuario, updatedUsuario.apellidos_usuario, updatedUsuario.correo_usuario, updatedUsuario.photo, updatedUsuario.telefono, updatedUsuario.contrasena, updatedUsuario.rol, id_usuarios]
+            [updatedUsuario.identificacion, updatedUsuario.nombre_usuario, updatedUsuario.apellidos_usuario, updatedUsuario.correo_usuario, updatedUsuario.photo, updatedUsuario.telefono, updatedUsuario.contrasena, updatedUsuario.rol, updatedUsuario.fk_id_mascota, id_usuarios]
         );
 
         if (result.affectedRows > 0) {

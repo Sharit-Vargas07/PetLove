@@ -2,6 +2,7 @@ import express  from 'express'
 import  body_parser from 'body-parser'
 import cors from 'cors'
 import rutaUsuario from './src/routes/usuarios.routes.js'
+import rutaMascota from './src/routes/mascotas.routes.js'
 
 
 //servidor
@@ -17,6 +18,7 @@ servidor.listen(3000, () =>{
 
 //ruta
 servidor.use('/usuario',rutaUsuario)
+servidor.use('/mascota',rutaMascota)
 
 
 //carpetas documentacion
