@@ -3,6 +3,9 @@ import  body_parser from 'body-parser'
 import cors from 'cors'
 import rutaUsuario from './src/routes/usuarios.routes.js'
 import rutaMascota from './src/routes/mascotas.routes.js'
+import rutaAdopcion from './src/routes/adopcion.routes.js'
+import rutaCategoria from './src/routes/categoria.routes.js'
+import rutaRaza from './src/routes/raza.routes.js'
 
 
 //servidor
@@ -19,6 +22,9 @@ servidor.listen(3000, () =>{
 //ruta
 servidor.use('/usuario',rutaUsuario)
 servidor.use('/mascota',rutaMascota)
+servidor.use('/adopcion',rutaAdopcion)
+servidor.use('/categoria',rutaCategoria)
+servidor.use('/raza',rutaRaza)
 
 
 //carpetas documentacion
