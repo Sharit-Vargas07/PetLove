@@ -1,34 +1,42 @@
 import { pool } from '../database/conexion.js';
+import {validationResult} from 'express-validator'
 
-export const registrarAdmin = async (req, res) => {
-    try {
-      const { nombre_usuario, apellidos_usuario, correo_usuario, contrasena, photo, rol, telefono, identificacion, fk_id_mascota } = req.body;
-  
-      const estado = 'activo';
-  
-      const [result] = await pool.query(
-        `INSERT INTO usuarios (nombre_usuario, apellidos_usuario, correo_usuario, contrasena, photo, rol, telefono, identificacion, fk_id_mascota) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [nombre_usuario, apellidos_usuario, correo_usuario, contrasena, photo, rol, telefono, identificacion, fk_id_mascota]
-      );
-  
-      if (result.affectedRows > 0) {
-        res.status(200).json({
-          status: 200,
-          message: 'Se registró con éxito el administrador ' + nombre_usuario
-        });
-      } else {
-        res.status(403).json({
-          status: 403,
-          message: 'No se registró el admnistrador'
-        });
-      }
-    } catch (error) {
-      res.status(500).json({
-        status: 500,
-        message: 'Error del servidor: ' + error.message
+
+export const registrarAdoptante = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json(errors);
+    }
+    const { nombre_usuario, apellidos_usuario, correo_usuario, contrasena, photo, telefono, fk_id_mascota } = req.body;
+
+    const rol = 'adoptante'; // Siempre asignar el rol de "adoptante"
+    const estado = 'activo';
+
+    // Si fk_id_mascota no está definido, lo cambiamos por null
+    const query = `INSERT INTO usuarios (nombre_usuario, apellidos_usuario, correo_usuario, contrasena, photo, rol, telefono, fk_id_mascota) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    const params = [nombre_usuario, apellidos_usuario, correo_usuario, contrasena, photo, rol, telefono, fk_id_mascota || null];
+
+    const [result] = await pool.query(query, params);
+
+    if (result.affectedRows > 0) {
+      res.status(200).json({
+        status: 200,
+        message: 'Se registró con éxito el adoptante ' + nombre_usuario
+      });
+    } else {
+      res.status(403).json({
+        status: 403,
+        message: 'No se registró el adoptante'
       });
     }
-  };
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      message: 'Error del servidor: ' + error.message
+    });
+  }
+};
 
 
   export const registrarUsuarios = async (req, res) => {

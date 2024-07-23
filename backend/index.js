@@ -6,6 +6,7 @@ import rutaMascota from './src/routes/mascotas.routes.js'
 import rutaAdopcion from './src/routes/adopcion.routes.js'
 import rutaCategoria from './src/routes/categoria.routes.js'
 import rutaRaza from './src/routes/raza.routes.js'
+import rutaValidacion from './src/routes/autenticacion.routes.js'
 
 
 //servidor
@@ -25,6 +26,7 @@ servidor.use('/mascota',rutaMascota)
 servidor.use('/adopcion',rutaAdopcion)
 servidor.use('/categoria',rutaCategoria)
 servidor.use('/raza',rutaRaza)
+servidor.use('/validacion',rutaValidacion)
 
 
 //carpetas documentacion

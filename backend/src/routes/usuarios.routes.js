@@ -1,11 +1,11 @@
 import { Router } from "express"
-import  {registrarAdmin, listarUsuarios, buscarUsuarios, actualizarUsuario, registrarUsuarios} from '../controllers/usuarios.controller.js';
+import  {registrarAdoptante, listarUsuarios, buscarUsuarios, actualizarUsuario, registrarUsuarios} from '../controllers/usuarios.controller.js';
 
 
 
 const rutaUsuario = Router();
 
-rutaUsuario.post('/registrarAdmin', registrarAdmin);
+rutaUsuario.post('/registrarAdoptante', registrarAdoptante);
 rutaUsuario.post('/registrarUsuario', registrarUsuarios);
 rutaUsuario.get('/listarUsuario', listarUsuarios);
 rutaUsuario.get('/buscarUsuario/:id_usuarios', buscarUsuarios);
