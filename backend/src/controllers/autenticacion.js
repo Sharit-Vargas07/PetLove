@@ -9,8 +9,13 @@ export const validar = async (req, res) => {
     const [rows] = await pool.query(sql, [correo_usuario, contrasena]);
 
     if (rows.length > 0) {
-      const token = Jwt.sign({ user: rows[0].id_usuario }, process.env.AUT_SECRET, { expiresIn: process.env.AUT_EXPIRE });
-      return res.status(200).json({ user: rows, token, message: 'token generado con éxito' });
+      const user = rows[0];
+      const token = Jwt.sign({ 
+        userId: user.id_usuario, 
+        role: user.rol // Asumiendo que la columna de rol es "rol"
+      }, process.env.AUT_SECRET, { expiresIn: process.env.AUT_EXPIRE });
+
+      return res.status(200).json({ user, token, message: 'token generado con éxito' });
     } else {
       return res.status(404).json({ message: "Usuario no autorizado" });
     }

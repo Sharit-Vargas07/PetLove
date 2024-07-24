@@ -54,7 +54,7 @@ export const InicioSesion = () => {
         if (userRol === 'adoptante') {
           setMensaje('Bienvenido adoptante');
           setModalAcciones(true);
-          navigate('/Dashboard');
+          navigate('/');
         } else if (userRol === 'administrador') {
           setMensaje('Bienvenido Admin');
           setModalAcciones(true);
