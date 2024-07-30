@@ -1,10 +1,8 @@
 import React, { useState, useRef } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { Input } from "@nextui-org/react";
 import { EyeFilledIcon } from "../NextIU/EyeFilledIcon.jsx";
 import { EyeSlashFilledIcon } from "../NextIU/EyeSlashFilledIcon.jsx";
-import AccionesModal from '../moleculas/ModalAcciones.jsx'
 import v from '../../styles/variables'
 import Swal from 'sweetalert2';
 
@@ -49,18 +47,8 @@ export const InicioSesion = () => {
           timer: 1500
         });
 
-        const userRol = user[0]?.rol;
-
-        if (userRol === 'adoptante') {
-          setMensaje('Bienvenido adoptante');
-          setModalAcciones(true);
-          navigate('/');
-        } else if (userRol === 'administrador') {
-          setMensaje('Bienvenido Admin');
-          setModalAcciones(true);
-          setModalOpen(false);
-          navigate('/Dashboard');
-        }
+        // Redirigir al dashboard independientemente del rol
+        navigate('/dashboard');
       } else {
         setMensaje('Credenciales incorrectas');
         setModalAcciones(true);

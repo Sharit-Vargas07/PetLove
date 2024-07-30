@@ -129,4 +129,3 @@ export const registrarCategoria = async (req, res) => {
       });
     }
   };
-  

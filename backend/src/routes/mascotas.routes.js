@@ -1,21 +1,13 @@
-import express from 'express';
-import {
-    listarMascotas,
-    buscarMascotas,
-    actualizarMascota,
-    registrarMascota
-} from '../controllers/mascotas.controller.js';
-import multer from 'multer';
+import { Router } from "express"
+import  {actualizarMascota, buscarMascotas, listarMascotas, registrarMascota} from '../controllers/mascotas.controller.js';
 
-const router = express.Router();
 
-// Middleware para manejar la carga de archivos
-const upload = multer({ dest: 'uploads/' });
 
-// Rutas
-router.post('/registrarM', upload.single('imagen'), registrarMascota);
-router.get('/listarM', listarMascotas);
-router.get('/buscarM/:id_mascotas', buscarMascotas);
-router.put('/actualizarM/:id_mascotas', actualizarMascota);
+const rutaMascota = Router();
 
-export default router;
+rutaMascota.post('/registrarM', registrarMascota);
+rutaMascota.get('/listarM', listarMascotas);
+rutaMascota.get('/buscarM/:id_mascotas', buscarMascotas);
+rutaMascota.put('/actualizarM/:id_mascotas', actualizarMascota);
+
+export default rutaMascota;

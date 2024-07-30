@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 
 function FormRegistro({ modalOpen, closeModal }) {
     const [formData, setFormData] = useState({
-        nombre_mascotas: '',
+        nombre_mascota: '',
         ciudad: '',
         fk_id_categoria: '',
         fk_id_raza: '',
@@ -67,6 +67,15 @@ function FormRegistro({ modalOpen, closeModal }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!formData.nombre_mascota) {
+            Swal.fire({
+                position: "top-center",
+                icon: "error",
+                title: "El nombre de la mascota no puede estar vacío",
+                showConfirmButton: true,
+            });
+            return;
+        }
         try {
             const data = new FormData();
             Object.keys(formData).forEach(key => {
@@ -119,192 +128,190 @@ function FormRegistro({ modalOpen, closeModal }) {
                         onChange={handleFileChange}
                     />
                     <label className='text-xl mb-2'> Nombre:</label>
+                    <input
+                        type="text"
+                        className='mb-4 p-1 rounded-2xl bg-slate-200'
+                        id='nombre_mascota'
+                        name='nombre_mascota'
+                        value={formData.nombre_mascota}
+                        onChange={handleChange}
+                    />
+                    <label className='text-xl mb-2'>Ciudad:</label>
+                    <input
+                        type="text"
+                        className='p-1 rounded-2xl bg-slate-200 mb-4'
+                        id='ciudad'
+                        name='ciudad'
+                        value={formData.ciudad}
+                        onChange={handleChange}
+                    />
+                    <label className='text-xl mb-2'> Categoría:</label>
+                    <select
+                        name='fk_id_categoria'
+                        id='fk_id_categoria'
+                        value={formData.fk_id_categoria}
+                        onChange={handleChange}
+                        className='mb-4 p-1 rounded-2xl bg-slate-200'
+                    >
+                        <option value=''>Seleccione una Categoría</option>
+                        {categorias.map((item) => (
+                            <option key={item.id_categoria} value={item.id_categoria}>
+                                {item.nombre}
+                            </option>
+                        ))}
+                    </select>
+                    <label className='text-xl mb-2'> Raza:</label>
+                    <select
+                        name='fk_id_raza'
+                        id='fk_id_raza'
+                        value={formData.fk_id_raza}
+                        onChange={handleChange}
+                        className='mb-4 p-1 rounded-2xl bg-slate-200'
+                    >
+                        <option value=''>Seleccione una Raza</option>
+                        {razas.map((item) => (
+                            <option key={item.id_raza} value={item.id_raza}>
+                                {item.nombre}
+                            </option>
+                        ))}
+                    </select>
+                    <label className='text-xl mb-2'> Género:</label>
+                    <select
+                        name='genero_mascotas'
+                        id='genero_mascotas'
+                        value={formData.genero_mascotas}
+                        onChange={handleChange}
+                        className='mb-4 p-1 rounded-2xl bg-slate-200'
+                    >
+                        <option value=''>Seleccione un Género</option>
+                        <option value="Macho">Macho</option>
+                        <option value="Hembra">Hembra</option>
+                    </select>
+                    <label className='text-xl mb-2'> Edad (en meses):</label>
+                    <input
+                        type="number"
+                        className='p-1 rounded-2xl bg-slate-200 mb-4'
+                        id='edad_mascota'
+                        name='edad_mascota'
+                        value={formData.edad_mascota}
+                        onChange={handleChange}
+                    />
+                    <label className='text-xl mb-2'> Tamaño:</label>
+                    <select
+                        name='tamano'
+                        id='tamano'
+                        value={formData.tamano}
+                        onChange={handleChange}
+                        className='p-1 rounded-2xl bg-slate-200 mb-4'
+                    >
+                        <option value=''>Seleccione un Tamaño</option>
+                        <option value="Pequeño">Pequeño</option>
+                        <option value="Mediano">Mediano</option>
+                        <option value="Grande">Grande</option>
+                    </select>
+                    <label className='text-xl mb-2'> Color de la Mascota:</label>
+                    <input
+                        type="text"
+                        className='p-1 rounded-2xl bg-slate-200 mb-4'
+                        id='color_mascota'
+                        name='color_mascota'
+                        value={formData.color_mascota}
+                        onChange={handleChange}
+                    />
+                    <label className='text-xl mb-2'> Esterilización:</label>
+                    <select
+                        name='esterilizacion'
+                        id='esterilizacion'
+                        value={formData.esterilizacion}
+                        onChange={handleChange}
+                        className='p-1 rounded-2xl bg-slate-200 mb-4'
+                    >
+                        <option value=''>Seleccione una opción</option>
+                        <option value="Sí">Sí</option>
+                        <option value="No">No</option>
+                    </select>
+                    <label className='text-xl mb-2'> Vacunas:</label>
+                    <input
+                        type="text"
+                        className='p-1 rounded-2xl bg-slate-200 mb-4'
+                        id='vacunas'
+                        name='vacunas'
+                        value={formData.vacunas}
+                        onChange={handleChange}
+                    />
+                    <label className='text-xl mb-2'> Desparacitación:</label>
+                    <select
+                        name='desparacitacion'
+                        id='desparacitacion'
+                        value={formData.desparacitacion}
+                        onChange={handleChange}
+                        className='p-1 rounded-2xl bg-slate-200 mb-4'
+                    >
+                        <option value=''>Seleccione una opción</option>
+                        <option value="Sí">Sí</option>
+                        <option value="No">No</option>
+                    </select>
+                    <label className='text-xl mb-2'> Fecha de Última Desparacitación:</label>
+                    <input
+                        type="date"
+                        className='p-1 rounded-2xl bg-slate-200 mb-4'
+                        id='fecha_ult_desparacitacion'
+                        name='fecha_ult_desparacitacion'
+                        value={formData.fecha_ult_desparacitacion}
+                        onChange={handleChange}
+                    />
+                    <label className='text-xl mb-2'> Discapacidad:</label>
+                    <select
+                        name='discapacidad'
+                        id='discapacidad'
+                        value={formData.discapacidad}
+                        onChange={handleChange}
+                        className='p-1 rounded-2xl bg-slate-200 mb-4'
+                    >
+                        <option value=''>Seleccione una opción</option>
+                        <option value="Sí">Sí</option>
+                        <option value="No">No</option>
+                    </select>
+                    {formData.discapacidad === "Sí" && (
+                        <>
+                            <label className='text-xl mb-2'> Descripción de la Discapacidad:</label>
                             <input
                                 type="text"
-                                className='mb-4 p-1 rounded-2xl bg-slate-200'
-                                id='nombre_mascotas'
-                                name='nombre_mascotas'
-                                value={formData.nombre_mascotas}
+                                className='p-1 rounded-2xl bg-slate-200 mb-4'
+                                id='descripcion_discapacidad'
+                                name='descripcion_discapacidad'
+                                value={formData.descripcion_discapacidad}
                                 onChange={handleChange}
                             />
-                            <label className='text-xl mb-2'>Ciudad:</label>
-                            <input
-                                type="text"
-                                className='p-1 rounded-2xl bg-slate-200 mb-4'
-                                id='ciudad'
-                                name='ciudad'
-                                value={formData.ciudad}
-                                onChange={handleChange}
-                            />
-                            <label className='text-xl mb-2'> Categoría:</label>
-                            <select
-                                name='fk_id_categoria'
-                                id='fk_id_categoria'
-                                value={formData.fk_id_categoria}
-                                onChange={handleChange}
-                                className='mb-4 p-1 rounded-2xl bg-slate-200'
-                            >
-                                <option value=''>Seleccione una Categoría</option>
-                                {categorias.map((item) => (
-                                    <option key={item.id_categoria} value={item.id_categoria}>
-                                        {item.nombre}
-                                    </option>
-                                ))}
-                            </select>
-                            <label className='text-xl mb-2'> Raza:</label>
-                            <select
-                                name='fk_id_raza'
-                                id='fk_id_raza'
-                                value={formData.fk_id_raza}
-                                onChange={handleChange}
-                                className='mb-4 p-1 rounded-2xl bg-slate-200'
-                            >
-                                <option value=''>Seleccione una Raza</option>
-                                {razas.map((item) => (
-                                    <option key={item.id_raza} value={item.id_raza}>
-                                        {item.nombre}
-                                    </option>
-                                ))}
-                            </select>
-                            <label className='text-xl mb-2'> Género:</label>
-                            <select
-                                name='genero_mascotas'
-                                id='genero_mascotas'
-                                value={formData.genero_mascotas}
-                                onChange={handleChange}
-                                className='mb-4 p-1 rounded-2xl bg-slate-200'
-                            >
-                                <option value=''>Seleccione un Género</option>
-                                <option value="Macho">Macho</option>
-                                <option value="Hembra">Hembra</option>
-                            </select>
-                            <label className='text-xl mb-2'> Edad (en meses):</label>
-                            <input
-                                type="number"
-                                className='p-1 rounded-2xl bg-slate-200 mb-4'
-                                id='edad_mascota'
-                                name='edad_mascota'
-                                value={formData.edad_mascota}
-                                onChange={handleChange}
-                            />
-                            <label className='text-xl mb-2'> Tamaño:</label>
-                            <select
-                                name='tamano'
-                                id='tamano'
-                                value={formData.tamano}
-                                onChange={handleChange}
-                                className='p-1 rounded-2xl bg-slate-200 mb-4'
-                            >
-                                <option value=''>Seleccione un Tamaño</option>
-                                <option value="Pequeño">Pequeño</option>
-                                <option value="Mediano">Mediano</option>
-                                <option value="Grande">Grande</option>
-                            </select>
-                            <label className='text-xl mb-2'> Color de la Mascota:</label>
-                            <input
-                                type="text"
-                                className='p-1 rounded-2xl bg-slate-200 mb-4'
-                                id='color_mascota'
-                                name='color_mascota'
-                                value={formData.color_mascota}
-                                onChange={handleChange}
-                            />
-                            <label className='text-xl mb-2'> Esterilización:</label>
-                            <select
-                                name='esterilizacion'
-                                id='esterilizacion'
-                                value={formData.esterilizacion}
-                                onChange={handleChange}
-                                className='p-1 rounded-2xl bg-slate-200 mb-4'
-                            >
-                                <option value=''>Seleccione una opción</option>
-                                <option value="Sí">Sí</option>
-                                <option value="No">No</option>
-                            </select>
-                            <label className='text-xl mb-2'> Vacunas:</label>
-                            <input
-                                type="text"
-                                className='p-1 rounded-2xl bg-slate-200 mb-4'
-                                id='vacunas'
-                                name='vacunas'
-                                value={formData.vacunas}
-                                onChange={handleChange}
-                            />
-                            <label className='text-xl mb-2'> Desparasitacion:</label>
-                            <select
-                                name='desparacitacion'
-                                id='desparacitacion'
-                                value={formData.desparacitacion}
-                                onChange={handleChange}
-                                className='p-1 rounded-2xl bg-slate-200 mb-4'
-                            >
-                                <option value=''>Seleccione una opción</option>
-                                <option value="Sí">Sí</option>
-                                <option value="No">No</option>
-                            </select>
-                            <label className='text-xl mb-2'> Fecha última desparasitacion:</label>
-                            <input
-                                type="date"
-                                className='p-1 rounded-2xl bg-slate-200 mb-4'
-                                id='fecha_ult_desparacitacion'
-                                name='fecha_ult_desparacitacion'
-                                value={formData.fecha_ult_desparacitacion}
-                                onChange={handleChange}
-                            />
-                            <label className='text-xl mb-2'> Discapacidad:</label>
-                            <select
-                                name='discapacidad'
-                                id='discapacidad'
-                                value={formData.discapacidad}
-                                onChange={handleChange}
-                                className='p-1 rounded-2xl bg-slate-200 mb-4'
-                            >
-                                <option value=''>Seleccione una opción</option>
-                                <option value="Sí">Sí</option>
-                                <option value="No">No</option>
-                            </select>
-                            {formData.discapacidad === 'Sí' && (
-                                <>
-                                    <label className='text-xl mb-2'> Descripción de discapacidad:</label>
-                                    <input
-                                        type="text"
-                                        className='p-1 rounded-2xl bg-slate-200 mb-4'
-                                        id='descripcion_discapacidad'
-                                        name='descripcion_discapacidad'
-                                        value={formData.descripcion_discapacidad}
-                                        onChange={handleChange}
-                                    />
-                                </>
-                            )}
-                            <label className='text-xl mb-2'> Compatibilidad con niños:</label>
-                            <select
-                                name='compatibilidad_ninos'
-                                id='compatibilidad_ninos'
-                                value={formData.compatibilidad_ninos}
-                                onChange={handleChange}
-                                className='p-1 rounded-2xl bg-slate-200 mb-4'
-                            >
-                                <option value=''>Seleccione una opción</option>
-                                <option value="Sí">Sí</option>
-                                <option value="No">No</option>
-                            </select>
-                            <label className='text-xl mb-2'> Compatibilidad con otros animales:</label>
-                            <select
-                                name='compatibilidad_otros_animales'
-                                id='compatibilidad_otros_animales'
-                                value={formData.compatibilidad_otros_animales}
-                                onChange={handleChange}
-                                className='p-1 rounded-2xl bg-slate-200 mb-4'
-                            >
-                                <option value=''>Seleccione una opción</option>
-                                <option value="Sí">Sí</option>
-                                <option value="No">No</option>
-                            </select>
-                            <div className='flex justify-center'>
-                                <button className="bg-[#A5C454] w-96 text-lg text-white p-2 rounded-3xl mt-4">
-                                    Registrar
-                                </button>
-                        </div>
+                        </>
+                    )}
+                    <label className='text-xl mb-2'> Compatibilidad con Niños:</label>
+                    <select
+                        name='compatibilidad_ninos'
+                        id='compatibilidad_ninos'
+                        value={formData.compatibilidad_ninos}
+                        onChange={handleChange}
+                        className='p-1 rounded-2xl bg-slate-200 mb-4'
+                    >
+                        <option value=''>Seleccione una opción</option>
+                        <option value="Sí">Sí</option>
+                        <option value="No">No</option>
+                    </select>
+                    <label className='text-xl mb-2'> Compatibilidad con Otros Animales:</label>
+                    <select
+                        name='compatibilidad_otros_animales'
+                        id='compatibilidad_otros_animales'
+                        value={formData.compatibilidad_otros_animales}
+                        onChange={handleChange}
+                        className='p-1 rounded-2xl bg-slate-200 mb-4'
+                    >
+                        <option value=''>Seleccione una opción</option>
+                        <option value="Sí">Sí</option>
+                        <option value="No">No</option>
+                    </select>
+                    <button type='submit' className='bg-[#FA67A7] hover:bg-[#c5296c] text-white py-2 px-4 rounded-xl'>
+                        Registrar Mascota
+                    </button>
                 </form>
             </div>
         </div>

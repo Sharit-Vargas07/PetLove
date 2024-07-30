@@ -1,59 +1,48 @@
+import express from 'express';
 import { pool } from '../database/conexion.js';
 import multer from 'multer';
 import path from 'path';
-
-// Configuración de multer
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/'); // Carpeta donde se guardarán las imágenes
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + path.extname(file.originalname)); // Nombre único para cada archivo
-    }
-});
-
-const upload = multer({ storage: storage });
+import { fileURLToPath } from 'url';
 
 export const registrarMascota = async (req, res) => {
     try {
         const {
-            nombre_mascotas, genero_mascotas, edad_mascota, tamano,
-            color_mascota, esterilizacion, vacunas, desparacitacion, fecha_ult_desparacitacion,
-            discapacidad, descripcion_discapacidad, compatibilidad_ninos, compatibilidad_otros_animales,
-            estado, fk_id_categoria, fk_id_raza, ciudad
+            nombre_mascota, genero_mascotas, edad_mascota, tamano, color_mascota,
+            esterilizacion, vacunas, desparacitacion, fecha_ult_desparacitacion,
+            discapacidad, descripcion_discapacidad, compatibilidad_ninos,
+            compatibilidad_otros_animales, imagen, estado, fk_id_categoria, ciudad, fk_id_raza
         } = req.body;
 
-        // Verificar si la categoría existe
-        const [categoriaResult] = await pool.query(
-            'SELECT * FROM categoria WHERE id_categoria = ?',
-            [fk_id_categoria]
-        );
-
-        if (categoriaResult.length === 0) {
+        // Validación de campos obligatorios
+        if (!nombre_mascota || !genero_mascotas || !edad_mascota || !tamano || !color_mascota ||
+            !esterilizacion || !vacunas || !desparacitacion || !fecha_ult_desparacitacion ||
+            !fk_id_categoria || !fk_id_raza) {
             return res.status(400).json({
                 status: 400,
-                message: 'La categoría especificada no existe'
+                message: 'Todos los campos son obligatorios excepto la imagen.'
             });
         }
 
-        const imagen = req.file ? req.file.filename : null;
-
+        // Insertar la mascota en la base de datos
         const [result] = await pool.query(
-            `INSERT INTO mascotas (nombre_mascotas, genero_mascotas, edad_mascota, tamano, color_mascota,
-            esterilizacion, vacunas, desparacitacion, fecha_ult_desparacitacion, discapacidad, descripcion_discapacidad,
-            compatibilidad_ninos, compatibilidad_otros_animales, imagen, estado, fk_id_categoria, fk_id_raza, ciudad)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            `INSERT INTO mascotas (nombre_mascota, genero_mascotas, edad_mascota, tamano, color_mascota,
+                esterilizacion, vacunas, desparacitacion, fecha_ult_desparacitacion,
+                discapacidad, descripcion_discapacidad, compatibilidad_ninos,
+                compatibilidad_otros_animales, imagen, estado, fk_id_categoria, ciudad, fk_id_raza)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
-                nombre_mascotas, genero_mascotas, edad_mascota, tamano, color_mascota, esterilizacion,
-                vacunas, desparacitacion, fecha_ult_desparacitacion, discapacidad, descripcion_discapacidad, compatibilidad_ninos,
-                compatibilidad_otros_animales, imagen, estado, fk_id_categoria, fk_id_raza, ciudad
+                nombre_mascota, genero_mascotas, edad_mascota, tamano, color_mascota,
+                esterilizacion, vacunas, desparacitacion, fecha_ult_desparacitacion,
+                discapacidad, descripcion_discapacidad, compatibilidad_ninos,
+                compatibilidad_otros_animales, imagen, estado, fk_id_categoria, ciudad, fk_id_raza
             ]
         );
 
         if (result.affectedRows > 0) {
             res.status(200).json({
                 status: 200,
-                message: `Se registró con éxito la mascota ${nombre_mascotas}`
+                message: 'Se registró con éxito la mascota',
+                new_mascota_id: result.insertId // Devolver el ID de la mascota insertada
             });
         } else {
             res.status(403).json({
@@ -62,14 +51,12 @@ export const registrarMascota = async (req, res) => {
             });
         }
     } catch (error) {
-        console.error('Error en el controlador registrarMascota:', error); // Imprimir detalles del error
         res.status(500).json({
             status: 500,
             message: 'Error del servidor: ' + error.message
         });
     }
 };
-
 
 export const listarMascotas = async (req, res) => {
     try {
@@ -117,14 +104,14 @@ export const actualizarMascota = async (req, res) => {
     try {
         const { id_mascotas } = req.params;
         const {
-            nombre_mascotas, genero_mascotas, edad_mascota, tamano, color_mascota,
+            nombre_mascota, genero_mascotas, edad_mascota, tamano, color_mascota,
             esterilizacion, vacunas, desparacitacion, fecha_ult_desparacitacion,
             discapacidad, descripcion_discapacidad, compatibilidad_ninos,
             compatibilidad_otros_animales, imagen, estado, fk_id_categoria, ciudad, fk_id_raza
         } = req.body;
 
         // Verificar que al menos uno de los campos esté presente en la solicitud
-        if (!nombre_mascotas && !genero_mascotas && !edad_mascota && !tamano &&
+        if (!nombre_mascota && !genero_mascotas && !edad_mascota && !tamano &&
             !color_mascota && !esterilizacion && !vacunas && !desparacitacion &&
             !fecha_ult_desparacitacion && !discapacidad && !ciudad && !descripcion_discapacidad &&
             !compatibilidad_ninos && !compatibilidad_otros_animales &&
@@ -146,7 +133,7 @@ export const actualizarMascota = async (req, res) => {
 
         // Crear un objeto con los valores actualizados
         const updateMascotas = {
-            nombre_mascotas: nombre_mascotas || oldMascota[0].nombre_mascotas,
+            nombre_mascota: nombre_mascota || oldMascota[0].nombre_mascota,
             genero_mascotas: genero_mascotas || oldMascota[0].genero_mascotas,
             edad_mascota: edad_mascota || oldMascota[0].edad_mascota,
             tamano: tamano || oldMascota[0].tamano,
@@ -168,21 +155,20 @@ export const actualizarMascota = async (req, res) => {
 
         // Ejecutar la consulta de actualización
         const [result] = await pool.query(
-            `UPDATE mascotas SET nombre_mascotas=?, genero_mascotas=?, edad_mascota=?, tamano=?, color_mascota=?,
+            `UPDATE mascotas SET nombre_mascota=?, genero_mascotas=?, edad_mascota=?, tamano=?, color_mascota=?,
             esterilizacion=?, vacunas=?, desparacitacion=?, fecha_ult_desparacitacion=?, discapacidad=?, descripcion_discapacidad=?,
             compatibilidad_ninos=?, compatibilidad_otros_animales=?, imagen=?, estado=?, ciudad=?, fk_id_categoria=?, fk_id_raza=?
             WHERE id_mascotas = ?`,
             [
-                updateMascotas.nombre_mascotas, updateMascotas.genero_mascotas, updateMascotas.edad_mascota,
+                updateMascotas.nombre_mascota, updateMascotas.genero_mascotas, updateMascotas.edad_mascota,
                 updateMascotas.tamano, updateMascotas.color_mascota, updateMascotas.esterilizacion,
                 updateMascotas.vacunas, updateMascotas.desparacitacion, updateMascotas.fecha_ult_desparacitacion,
                 updateMascotas.discapacidad, updateMascotas.descripcion_discapacidad, updateMascotas.compatibilidad_ninos,
-                updateMascotas.compatibilidad_otros_animales, updateMascotas.imagen, updateMascotas.estado, updateMascotas.ciudad,
-                updateMascotas.fk_id_categoria, updateMascotas.fk_id_raza, id_mascotas
+                updateMascotas.compatibilidad_otros_animales, updateMascotas.imagen, updateMascotas.estado,
+                updateMascotas.ciudad, updateMascotas.fk_id_categoria, updateMascotas.fk_id_raza, id_mascotas
             ]
         );
 
-        // Verificar el resultado de la consulta
         if (result.affectedRows > 0) {
             res.status(200).json({
                 status: 200,
